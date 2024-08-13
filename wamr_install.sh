@@ -55,6 +55,11 @@ echo "========================================================================="
 echo "  시스템 패키지 목록을 업데이트 중입니다..."
 echo "========================================================================="
 sudo apt-get update
+if [ $? -eq 0 ]; then
+    echo "시스템 패키지 목록이 성공적으로 업데이트되었습니다." >> /home/$USER/Desktop/setup_status.log
+else
+    echo "시스템 패키지 목록 업데이트에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+fi
 echo " "
 
 # 패키지 설치 루프
@@ -63,6 +68,11 @@ for pkg in "${packages[@]}"; do
     echo "  $pkg 설치 중..."
     echo "========================================================================="
     sudo apt-get install -y $pkg
+    if [ $? -eq 0 ]; then
+        echo "$pkg 설치가 성공적으로 완료되었습니다." >> /home/$USER/Desktop/setup_status.log
+    else
+        echo "$pkg 설치에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+    fi
     echo " "
 done
 
@@ -74,6 +84,11 @@ sudo ufw app list
 sudo ufw allow 'Apache Full'
 sudo ufw enable
 sudo ufw status >> /home/$USER/Desktop/ApacheUfwStatus.log
+if [ $? -eq 0 ]; then
+    echo "Apache2 설정이 성공적으로 완료되었습니다." >> /home/$USER/Desktop/setup_status.log
+else
+    echo "Apache2 설정에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+fi
 echo " "
 
 # MySQL 설정
@@ -83,6 +98,11 @@ echo "========================================================================="
 sudo systemctl enable mysql
 sudo systemctl start mysql
 sudo systemctl status mysql >> /home/$USER/Desktop/mysql_status.log
+if [ $? -eq 0 ]; then
+    echo "MySQL 서버가 성공적으로 설정되었습니다." >> /home/$USER/Desktop/setup_status.log
+else
+    echo "MySQL 서버 설정에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+fi
 echo " "
 
 # WordPress 설치 및 설정
@@ -92,7 +112,6 @@ echo "========================================================================="
 sudo cp /usr/share/wordpress/wp-config-sample.php /usr/share/wordpress/wp-config.php
 sudo chown -R www-data:www-data /usr/share/wordpress
 sudo ln -s /usr/share/wordpress /var/www/html/wordpress
-# WordPress 설정 완료 확인 로그
 if [ -f /var/www/html/wordpress/wp-config.php ]; then
     echo "WordPress 설정이 완료되었습니다. /var/www/html/wordpress/wp-config.php 파일이 존재합니다." >> /home/$USER/Desktop/wordpress_setup.log
     echo "WordPress 설정이 성공적으로 완료되었습니다."
@@ -109,6 +128,11 @@ echo "========================================================================="
 sudo systemctl enable zabbix-server zabbix-agent apache2
 sudo systemctl start zabbix-server zabbix-agent apache2
 sudo systemctl status zabbix-server zabbix-agent apache2 >> /home/$USER/Desktop/zabbix_status.log
+if [ $? -eq 0 ]; then
+    echo "Zabbix 서버가 성공적으로 설정되었습니다." >> /home/$USER/Desktop/setup_status.log
+else
+    echo "Zabbix 서버 설정에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+fi
 echo " "
 
 # Emscripten 설치 및 설정 (WASM 개발 환경)
@@ -122,6 +146,11 @@ cd /home/$USER/Desktop/emsdk
 ./emsdk activate latest
 echo "source /home/$USER/Desktop/emsdk/emsdk_env.sh" >> ~/.bashrc
 source ~/.bashrc
+if [ $? -eq 0 ]; then
+    echo "Emscripten 설치 및 설정이 성공적으로 완료되었습니다." >> /home/$USER/Desktop/setup_status.log
+else
+    echo "Emscripten 설치 및 설정에 실패했습니다." >> /home/$USER/Desktop/setup_status.log
+fi
 echo " "
 
 # 마무리 메시지
