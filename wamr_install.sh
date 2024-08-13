@@ -92,6 +92,14 @@ echo "========================================================================="
 sudo cp /usr/share/wordpress/wp-config-sample.php /usr/share/wordpress/wp-config.php
 sudo chown -R www-data:www-data /usr/share/wordpress
 sudo ln -s /usr/share/wordpress /var/www/html/wordpress
+# WordPress 설정 완료 확인 로그
+if [ -f /var/www/html/wordpress/wp-config.php ]; then
+    echo "WordPress 설정이 완료되었습니다. /var/www/html/wordpress/wp-config.php 파일이 존재합니다." >> /home/$USER/Desktop/wordpress_setup.log
+    echo "WordPress 설정이 성공적으로 완료되었습니다."
+else
+    echo "WordPress 설정에 실패했습니다. wp-config.php 파일을 찾을 수 없습니다." >> /home/$USER/Desktop/wordpress_setup.log
+    echo "WordPress 설정에 문제가 발생했습니다."
+fi
 echo " "
 
 # Zabbix 설치 및 설정
